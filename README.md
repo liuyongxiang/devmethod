@@ -27,7 +27,14 @@ claude plugin marketplace add /Users/fei/IdeaProjects/DataIntell/devmethod
 claude plugin install devmethod@devmethod
 ```
 
-推到 GitCode/GitHub 后，其他人用仓库地址替代本地路径即可。安装后重启会话生效。
+或从 GitCode 远程安装（私有仓，需仓库访问权限与可用的 git 凭据）：
+
+```bash
+claude plugin marketplace add https://gitcode.com/qq_22408539/devmethod.git
+claude plugin install devmethod@devmethod
+```
+
+安装后重启会话生效；marketplace 名固定为 `devmethod`（取自 `marketplace.json`，与仓库名无关）。
 
 ## 项目接入（新项目三步）
 
