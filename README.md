@@ -1,0 +1,89 @@
+# devmethod
+
+**五阶段 AI coding 开发方法论插件**：把「需求澄清 → 设计 → 开发 → 检视 → 转测」做成 Claude Code 可调用的技能，
+配套 D/F/B/S 四类受管文档（设计方案 / 实施归档 / 故障档案 / 当前规约）与自动索引工具链，
+任何项目装上即用，项目差异经一份 `ROUTE.md` 技术参考适配。
+
+方法论源流：openJiuwen agent-core 的 `.agents` 开发方法论 → DataSwarm 本地适配 → 插件化（通用化）。
+
+## 五个技能
+
+装好后以「插件名:技能名」调用（如 `/devmethod:design`），Claude 也会按任务上下文自动选用：
+
+| 调用名 | 阶段 | 干什么 |
+|---|---|---|
+| `devmethod:coding-flow` | 全流程路由 | 识别当前阶段并调度其余四技能；任何改代码任务强制经过 `dev`，大特性先问用户是否进 `design` |
+| `devmethod:design` | 设计 | 方案形成、评审、生命周期管理（proposals→active→archive），产出可交给开发的已确认设计 |
+| `devmethod:dev` | 开发 | 落实已确认方案：实现与测试、spec/feature/bugfix 开发记忆维护、提交计划确认 |
+| `devmethod:review` | 检视 | 基线→候选差异分析、契约与红线核对、P0–P3 问题输出与复查 |
+| `devmethod:testing` | 转测 | 把开发交接整理成测试人员可独立执行、结果可追溯的转测文档 |
+
+## 安装
+
+本仓同时是一个插件市场（marketplace）。从本地路径安装：
+
+```bash
+claude plugin marketplace add /Users/fei/IdeaProjects/DataIntell/devmethod
+claude plugin install devmethod@devmethod
+```
+
+推到 GitCode/GitHub 后，其他人用仓库地址替代本地路径即可。安装后重启会话生效。
+
+## 项目接入（新项目三步）
+
+1. **装插件**（见上）。
+2. **建文档树脚手架**（在项目根执行一次）：
+
+   ```bash
+   mkdir -p .agents/agent-docs/designs/{proposals,active,archive,testing} \
+            .agents/agent-docs/{specs,features,bugfix}
+   ```
+
+   `.agents/` 入库与否由项目自行决定：团队共享就提交跟踪，个人本地就加进忽略清单。
+3. **写 ROUTE.md**：按 `devmethod:review` 技能内的
+   [project-route.md 规范](plugins/devmethod/skills/review/references/project-route.md)
+   在 `.agents/agent-docs/ROUTE.md` 维护项目技术参考（仓库定位、模块地图、红线、验证命令）。
+   可选但强烈建议——没有它，技能退化为「读入口文档 + 实际代码」，模块词表与红线逐次口头确认。
+
+技能读取的项目锚点就两个：**入口文档**（`AGENTS.md` / `Agent.md` / `CLAUDE.md`，存在哪个读哪个）与
+**ROUTE.md**；工具链命令未知时技能会先询问用户，不臆造。
+
+## 文档体系与工具链
+
+`.agents/agent-docs/` 下四类受管文档，均带 frontmatter、由脚本自动生成索引：
+
+- `designs/`（D）：`D-YYYYMMDD-HHMM-<slug>/design.md`，含生命周期与按日期评审记录
+- `features/`（F）：`F_YYYYMMDD_HHMM_<slug>.md` 平铺，记录实际实现、决策与 why-not
+- `bugfix/`（B）：`bugfix/<module>/B_YYYYMMDD_HHMM_<slug>.md`，现象/根因/回归证据
+- `specs/`（S）：`specs/<module>/S_NN_<slug>.md`，当前有效契约
+
+索引工具随 `design` 技能附带在 `scripts/`（从项目根运行；依赖 PyYAML，项目环境没有就用
+`uv run --no-project --with pyyaml python …`）：
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/skills/design/scripts/sync_documents.py"            # 全量同步元数据与索引
+python "${CLAUDE_PLUGIN_ROOT}/skills/design/scripts/sync_documents.py" --document <新建文档路径>   # 建档时署名
+python "${CLAUDE_PLUGIN_ROOT}/skills/design/scripts/validate_frontmatter.py"      # 可选校验
+python "${CLAUDE_PLUGIN_ROOT}/skills/design/scripts/generate_index.py" --root .agents/agent-docs/designs
+```
+
+`${CLAUDE_PLUGIN_ROOT}` 未设置时（非插件上下文），用 `claude plugin list` 定位插件安装目录替换。
+脚本自带 14 个单元测试（`plugins/devmethod/skills/design/tests/`）。
+
+## 仓库结构
+
+```
+.claude-plugin/marketplace.json        # 插件市场清单（单插件）
+plugins/devmethod/
+├── .claude-plugin/plugin.json         # 插件清单
+└── skills/
+    ├── coding-flow/SKILL.md           # 阶段路由
+    ├── design/                        # 设计技能 + references + templates + scripts + tests
+    ├── dev/                           # 开发技能 + references + templates
+    ├── review/                        # 检视技能 + references（含 project-route.md 规范）
+    └── testing/                       # 转测技能 + references + templates
+```
+
+## 版本
+
+- 0.1.0（2026-11-05）：从 DataSwarm 本地方法论插件化，通用化项目适配层（ROUTE.md），14 项工具链单测通过。
