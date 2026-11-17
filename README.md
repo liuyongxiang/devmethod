@@ -104,3 +104,7 @@ plugins/devmethod/
 
 - 0.2.0（2026-11-17）：新增 SessionStart hook 安装即自动注入强制路由规则；新增 `/devmethod:init` 脚手架命令；coding-flow / dev 技能触发描述增强；采用 Apache 2.0 协议（LICENSE + plugin.json SPDX 字段）。
 - 0.1.0（2026-11-05）：从 DataSwarm 本地方法论插件化，通用化项目适配层（ROUTE.md），14 项工具链单测通过。
+
+## 许可证
+
+[Apache License 2.0](LICENSE)：可自由安装、使用、修改与分发本插件，须保留原版权与许可声明。
