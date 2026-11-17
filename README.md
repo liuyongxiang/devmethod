@@ -4,11 +4,10 @@
 配套 D/F/B/S 四类受管文档（设计方案 / 实施归档 / 故障档案 / 当前规约）与自动索引工具链，
 任何项目装上即用，项目差异经一份 `ROUTE.md` 技术参考适配。
 
-方法论源流：openJiuwen agent-core 的 `.agents` 开发方法论 → DataSwarm 本地适配 → 插件化（通用化）。
-
 ## 五个技能
 
-装好后以「插件名:技能名」调用（如 `/devmethod:design`），Claude 也会按任务上下文自动选用：
+装好后以「插件名:技能名」调用（如 `/devmethod:design`）。**自动触发不靠模型自觉**：
+插件自带 `SessionStart` hook，装上即把「改动代码必经 coding-flow 路由」的强制规则注入每个会话上下文，项目侧零配置。
 
 | 调用名 | 阶段 | 干什么 |
 |---|---|---|
@@ -35,11 +34,11 @@ claude plugin install devmethod@devmethod
 ```
 
 安装后重启会话生效；marketplace 名固定为 `devmethod`（取自 `marketplace.json`，与仓库名无关）。
+插件升级后需重装一次让缓存快照刷新（本地源改动 → `claude plugin install devmethod@devmethod` 重跑即可）。
 
-## 项目接入（新项目三步）
+## 项目接入（装插件后两步，均可选）
 
-1. **装插件**（见上）。
-2. **建文档树脚手架**（在项目根执行一次）：
+1. **建文档树脚手架**（在项目根运行一次 `/devmethod:init`，或手动）：
 
    ```bash
    mkdir -p .agents/agent-docs/designs/{proposals,active,archive,testing} \
@@ -47,10 +46,14 @@ claude plugin install devmethod@devmethod
    ```
 
    `.agents/` 入库与否由项目自行决定：团队共享就提交跟踪，个人本地就加进忽略清单。
-3. **写 ROUTE.md**：按 `devmethod:review` 技能内的
+   不建也不阻塞流程——技能首次需要落档时可按 dev 阶段约定现建。
+2. **写 ROUTE.md**：按 `devmethod:review` 技能内的
    [project-route.md 规范](plugins/devmethod/skills/review/references/project-route.md)
    在 `.agents/agent-docs/ROUTE.md` 维护项目技术参考（仓库定位、模块地图、红线、验证命令）。
    可选但强烈建议——没有它，技能退化为「读入口文档 + 实际代码」，模块词表与红线逐次口头确认。
+
+强制路由规则（「改代码必须走 coding-flow / dev」）无需再写进入口文档——由插件 SessionStart hook
+在每个会话自动注入，装上即生效。
 
 技能读取的项目锚点就两个：**入口文档**（`AGENTS.md` / `Agent.md` / `CLAUDE.md`，存在哪个读哪个）与
 **ROUTE.md**；工具链命令未知时技能会先询问用户，不臆造。
@@ -80,9 +83,15 @@ python "${CLAUDE_PLUGIN_ROOT}/skills/design/scripts/generate_index.py" --root .a
 ## 仓库结构
 
 ```
+LICENSE                                # Apache 2.0
 .claude-plugin/marketplace.json        # 插件市场清单（单插件）
 plugins/devmethod/
 ├── .claude-plugin/plugin.json         # 插件清单
+├── hooks/
+│   ├── hooks.json                     # SessionStart hook：每会话自动注入强制路由规则
+│   └── rules.md                       # 被注入的规则文本
+├── commands/
+│   └── init.md                        # /devmethod:init：一键建 .agents/agent-docs 脚手架
 └── skills/
     ├── coding-flow/SKILL.md           # 阶段路由
     ├── design/                        # 设计技能 + references + templates + scripts + tests
@@ -93,4 +102,5 @@ plugins/devmethod/
 
 ## 版本
 
+- 0.2.0（2026-11-17）：新增 SessionStart hook 安装即自动注入强制路由规则；新增 `/devmethod:init` 脚手架命令；coding-flow / dev 技能触发描述增强；采用 Apache 2.0 协议（LICENSE + plugin.json SPDX 字段）。
 - 0.1.0（2026-11-05）：从 DataSwarm 本地方法论插件化，通用化项目适配层（ROUTE.md），14 项工具链单测通过。

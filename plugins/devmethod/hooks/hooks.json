@@ -1,0 +1,16 @@
+{
+  "description": "devmethod 强制路由规则注入：每个会话启动（含 compact 后重建）把「改动代码必经 coding-flow」的规则放进上下文",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat \"${CLAUDE_PLUGIN_ROOT}/hooks/rules.md\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

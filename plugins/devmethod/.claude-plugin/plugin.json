@@ -1,7 +1,8 @@
 {
   "name": "devmethod",
   "description": "五阶段开发方法论：需求澄清 → design → dev → review → testing，附设计/实施/故障/规约四类受管文档（D/F/B/S）与自动索引工具链；项目差异经 ROUTE.md 技术参考适配",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "license": "Apache-2.0",
   "author": {
     "name": "Liuliuliu",
     "email": "liuyongxiang5@huawei.com"

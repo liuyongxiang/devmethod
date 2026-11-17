@@ -1,6 +1,6 @@
 ---
 name: dev
-description: 在项目中落实已确认方案，编写实现与测试，并维护 specs、features、bugfix、实现偏差和开发交接记忆。适用于开发落地阶段；新方案的设计与评审使用 design。
+description: 在项目中落实已确认方案，编写实现与测试，并维护 specs、features、bugfix、实现偏差和开发交接记忆。任何改动代码的任务（含日常明确修复）都经本技能执行；新方案的设计与评审使用 design。
 ---
 
 # dev

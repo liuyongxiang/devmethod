@@ -1,6 +1,6 @@
 ---
 name: coding-flow
-description: 串联 AI coding 的需求澄清、设计、开发、检视、转测资料与交付，识别当前阶段并维护阶段交接。适用于完整特性流程或需要协调多个阶段的任务。
+description: 改动代码必经的阶段路由：实现特性、修复缺陷、重构、补写测试等任务动手前先经本技能识别当前阶段，再路由到 design/dev/review/testing；也适用于完整特性流程或需要协调多个阶段的任务。
 ---
 
 # coding-flow
