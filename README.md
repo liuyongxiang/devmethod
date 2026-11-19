@@ -47,9 +47,11 @@ claude plugin install devmethod@devmethod
 
    `.agents/` 入库与否由项目自行决定：团队共享就提交跟踪，个人本地就加进忽略清单。
    不建也不阻塞流程——技能首次需要落档时可按 dev 阶段约定现建。
-2. **写 ROUTE.md**：按 `devmethod:review` 技能内的
-   [project-route.md 规范](plugins/devmethod/skills/review/references/project-route.md)
-   在 `.agents/agent-docs/ROUTE.md` 维护项目技术参考（仓库定位、模块地图、红线、验证命令）。
+2. **写 ROUTE.md**：`/devmethod:init` 会按 review 技能的唯一模板
+   [route.md](plugins/devmethod/skills/review/assets/templates/route.md)
+   生成 `.agents/agent-docs/ROUTE.md` 最小骨架，基于骨架补齐实际内容
+   （仓库定位、模块地图、红线、验证命令）；规范与维护纪律见
+   [project-route.md](plugins/devmethod/skills/review/references/project-route.md)。
    可选但强烈建议——没有它，技能退化为「读入口文档 + 实际代码」，模块词表与红线逐次口头确认。
 
 强制路由规则（「改代码必须走 coding-flow / dev」）无需再写进入口文档——由插件 SessionStart hook

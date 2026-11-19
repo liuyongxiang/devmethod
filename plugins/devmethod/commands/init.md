@@ -13,9 +13,11 @@ description: 为当前项目创建 devmethod 文档脚手架（.agents/agent-doc
             .agents/agent-docs/{specs,features,bugfix}
    ```
 
-2. 若 `.agents/agent-docs/ROUTE.md` 不存在，按 review 技能的
-   [project-route.md](../skills/review/references/project-route.md) 规范生成模板，
-   包含仓库定位、模块地图、项目红线、验证命令四个小节的占位结构，并提示用户补齐实际内容。
+2. 若 `.agents/agent-docs/ROUTE.md` 不存在，复制 review 技能的唯一模板
+   [route.md](../skills/review/assets/templates/route.md) 到该路径，生成最小骨架；
+   将 `〈项目名〉`（项目根目录名或入口文档中的名称）与 `〈YYYY-MM-DD〉`（当天日期）替换为实际值，
+   其余 `〈占位内容〉` 原样保留，并提示用户按
+   [project-route.md](../skills/review/references/project-route.md) 规范补齐实际内容。
 3. 提醒用户：`.agents/` 入库与否由项目自行决定（团队共享就提交跟踪，个人本地就加进忽略清单）；
    本命令不执行任何 git 操作，也不修改任何入口文档。
 
